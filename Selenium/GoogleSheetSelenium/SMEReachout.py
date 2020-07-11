@@ -4,16 +4,11 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.keys import Keys
 import getpass
-from parsel import Selector
+from bs4 import BeautifulSoup
 # 
 ##options = FirefoxOptions()
 ##options.add_argument("--headless")
 ##driver = webdriver.Firefox(executable_path='F:\Projects\Automation\Selenium\geckodriver.exe',options=options)
-##driver.get("https://pythonbasics.org")
-
-#driver = webdriver.Firefox(executable_path='F:\Projects\Automation\Selenium\geckodriver.exe')
-#driver.get("https://pythonbasics.org")
-#
 
 scope = ["https://spreadsheets.google.com/feeds",
          'https://www.googleapis.com/auth/spreadsheets',
@@ -40,16 +35,26 @@ password = driver.find_element_by_id('password').send_keys(pw)
 login = driver.find_element_by_class_name('login__form_action_container')
 login.click()
 
-driver.get(sheet.cell(185,2).value)
+driver.get(sheet.cell(183,2).value)
 
-sel = Selector(text=driver.page_source)
-name = sel.xpath('//*[@class="inline t-24 t-black t-normal break-words"]/text()').extract_first().strip()
-job_title = sel.xpath('//*[@class="mt1 t-18 t-black t-normal break-words"]/text()').extract_first().strip()
+src = driver.page_source
+soup = BeautifulSoup(src, 'lxml')
 
-qualification = sel.xpath('//*[@class="pv-entity__degree-info"]/text()').extract_first().strip()
-experience = sel.xpath('//*[contains(@class, "pv-entity__dates t-14 t-black--light t-normal")]/text()').extract_first().strip()
+name_div = soup.find('div', {'class':'flex-1 mr5'})
+name_loc =  name_div.find_all('ul')
+name = name_loc[0].find('li').get_text().strip()
 
+exp_section = soup.find('section', {'id':'experience-section'})
+exp_section = exp_section.find('ul')
+li_tags = exp_section.find('div')
+a_tags = li_tags.find('a')
+job_title = a_tags.find('h3').get_text().strip()
+company = a_tags.find_all('p')[1].get_text().strip()
 
+edu_section = soup.find('section', {'id':'education-section'})
+university_name = edu_section.find('h3').get_text().strip()
+degree_name = edu_section.find('p',{'class':'pv-entity__secondary-title pv-entity__degree-name t-14 t-black t-normal'}).find_all('span')[1].get_text().strip()
+degree_year = edu_section.find('p',{'class':'pv-entity__dates t-14 t-black--light t-normal'}).find_all('span')[1].find_all('time')[1].get_text().strip()
 #def autofill(rowno, link):
 #    driver.get(link)
 #    name = driver.find_element_by_class_name('inline.t-24.t-black.t-normal.break-words')
