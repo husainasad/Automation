@@ -46,9 +46,9 @@ def connectMsg(Name):
         custom_msg = 'Hello ' + Name + '\nWe, at upGrad, are looking for SMEs for our upcoming online software development programs. We believe that it’s an ideal opportunity for us to make rigorous higher education accessible to a wider audience. This will be a part-time engagement, and we will be working remotely.Thanks!'
         msg_space = driver.find_element_by_id('custom-message')
         msg_space.send_keys(custom_msg)
-#        driver.find_element_by_class_name('ml1').click()
+        driver.find_element_by_class_name('ml1').click()
     except:
-        print("error in connecting")
+        print("error in sending connection message")
     
 
 
@@ -111,7 +111,7 @@ def fillSheet(new_row,query,page_no):
     rdate = rdate.strftime("%d/%b/%Y")
     sheet.update_cell(new_row, 6, rdate)
     
-    sheet.update_cell(new_row, 7, 'Selenium')
+    sheet.update_cell(new_row, 7, 'Asad')
     
     sheet.update_cell(new_row, 23, query)
     
@@ -121,8 +121,8 @@ def fillSheet(new_row,query,page_no):
     sheet.update_cell(new_row, 26, 'Not-Replied')
     sheet.update_cell(new_row, 32, page_no)
     
-    name = name.split(" ")[0]
-    connectMsg(name)
+#    name = name.split(" ")[0]
+#    connectMsg(name)
     
 def getProfiles(profile_list ):
     profiles = []
@@ -148,6 +148,7 @@ pw = getpass.getpass("Enter Password")
    
 username = driver.find_element_by_id('username').send_keys(emailid)
 password = driver.find_element_by_id('password').send_keys(pw)
+
 
 login = driver.find_element_by_class_name('login__form_action_container')
 login.click()
